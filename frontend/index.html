@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>F1 Világbajnokok</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;800&family=Orbitron:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-1: #f4efe7;
+      --bg-2: #dfd0b7;
+      --card: rgba(252, 249, 243, 0.78);
+      --ink: #1d242e;
+      --muted: #516074;
+      --accent: #be2f16;
+      --accent-2: #146050;
+      --line: rgba(25, 35, 48, 0.13);
+      --shadow: 0 20px 48px rgba(34, 27, 17, 0.24);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Barlow", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 12%, rgba(190, 47, 22, 0.17), transparent 34%),
+        radial-gradient(circle at 88% 80%, rgba(20, 96, 80, 0.21), transparent 36%),
+        linear-gradient(140deg, var(--bg-1), var(--bg-2));
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.14;
+      background-image: linear-gradient(transparent 95%, rgba(0, 0, 0, 0.3) 95%);
+      background-size: 100% 12px;
+    }
+
+    .app {
+      width: min(760px, 100%);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--card);
+      backdrop-filter: blur(7px);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      position: relative;
+      animation: rise-in 680ms ease-out both;
+    }
+
+    .app::after {
+      content: "";
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 110px;
+      height: 110px;
+      border: 2px dashed rgba(31, 92, 78, 0.2);
+      border-radius: 50%;
+      transform: rotate(-10deg);
+    }
+
+    .eyebrow {
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.73rem;
+      color: var(--accent-2);
+      font-weight: 700;
+      opacity: 0;
+      animation: fade-up 500ms 120ms ease forwards;
+    }
+
+    h1 {
+      margin: 8px 0 14px;
+      font-family: "Orbitron", sans-serif;
+      font-size: clamp(1.5rem, 3.6vw, 2.3rem);
+      line-height: 1.1;
+      letter-spacing: 0.03em;
+      max-width: 21ch;
+      opacity: 0;
+      animation: fade-up 500ms 220ms ease forwards;
+    }
+
+    .description {
+      margin: 0 0 24px;
+      color: var(--muted);
+      font-size: 1.03rem;
+      opacity: 0;
+      animation: fade-up 500ms 320ms ease forwards;
+    }
+
+    .control-box {
+      background: rgba(255, 255, 255, 0.58);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      opacity: 0;
+      animation: fade-up 500ms 430ms ease forwards;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 1rem;
+      font-family: inherit;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.9);
+      cursor: pointer;
+      transition: border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: rgba(190, 47, 22, 0.6);
+      box-shadow: 0 0 0 3px rgba(190, 47, 22, 0.16);
+    }
+
+    #result {
+      margin-top: 18px;
+      min-height: 54px;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.62);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 1.08rem;
+    }
+
+    #result span {
+      color: var(--accent);
+      font-weight: 800;
+      letter-spacing: 0.01em;
+    }
+
+    .status {
+      color: var(--muted);
+      font-size: 0.96rem;
+    }
+
+    .meta {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      opacity: 0.86;
+    }
+
+    .champions-list {
+      margin: 18px 0 0;
+      padding: 0;
+      list-style: none;
+      max-height: 300px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .champions-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-top: 1px solid var(--line);
+      font-size: 0.97rem;
+    }
+
+    .champions-list li:first-child {
+      border-top: 0;
+    }
+
+    .year-badge {
+      font-family: "Orbitron", sans-serif;
+      font-size: 0.84rem;
+      background: rgba(20, 96, 80, 0.1);
+      border: 1px solid rgba(20, 96, 80, 0.22);
+      color: var(--accent-2);
+      border-radius: 999px;
+      padding: 3px 10px;
+      min-width: 70px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .champion-name {
+      font-weight: 700;
+      color: var(--ink);
+      text-align: right;
+    }
+
+    @keyframes rise-in {
+      from {
+        transform: translateY(18px) scale(0.99);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fade-up {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .app {
+        padding: 20px;
+        border-radius: 18px;
+      }
+
+      .description {
+        font-size: 0.97rem;
+      }
+
+      #result {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <p class="eyebrow">Formula 1 adatok</p>
+    <h1>Világbajnokok 1980-tól napjainkig</h1>
+    <p class="description">Itt most valóban csak F1 egyéni világbajnokok szerepelnek. Válassz szezont, vagy nézd végig a teljes listát.</p>
+
+    <section class="control-box">
+      <label for="raceSelect">Szezon</label>
+      <select id="raceSelect" onchange="showWinner()">
+        <option value="">-- Válassz szezont --</option>
+      </select>
+
+      <div id="result"><span class="status">Betöltés...</span></div>
+      <div id="backendSource" class="meta"></div>
+      <ul id="championsList" class="champions-list"></ul>
+    </section>
+  </main>
+
+  <script>
+    const BACKEND_CANDIDATES = [
+      window.location.origin,
+      'http://localhost:3000',
+      'http://k8sprojekt-backend-schmitzhoferpal.jcloud.jedlik.cloud'
+    ];
+
+    let activeBackend = '';
+    let championships = [];
+
+    const result = document.getElementById('result');
+    const source = document.getElementById('backendSource');
+    const championsList = document.getElementById('championsList');
+
+    function setStatus(message) {
+      result.innerHTML = `<span class="status">${message}</span>`;
+    }
+
+    function renderChampionsList(items) {
+      championsList.innerHTML = '';
+      items.forEach((item) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span class="year-badge">${item.year}</span><span class="champion-name">${item.champion || item.winner}</span>`;
+        championsList.appendChild(li);
+      });
+    }
+
+    async function fetchFromKnownBackends(path) {
+      for (const base of BACKEND_CANDIDATES) {
+        const endpoint = `${base}${path}`;
+        try {
+          const res = await fetch(endpoint);
+          if (!res.ok) {
+            continue;
+          }
+
+          const payload = await res.json();
+          activeBackend = base;
+          return payload;
+        } catch (error) {
+          // Try next backend candidate.
+        }
+      }
+
+      throw new Error('Nem találtam elérhető backendet.');
+    }
+
+    async function loadRaces() {
+      try {
+        setStatus('Szezonok betöltése...');
+        championships = await fetchFromKnownBackends('/championships');
+
+        if (!Array.isArray(championships) || championships.length === 0) {
+          throw new Error('A backend nem adott vissza világbajnok adatokat.');
+        }
+
+        const select = document.getElementById('raceSelect');
+        championships.forEach((item) => {
+          const opt = document.createElement('option');
+          opt.value = item.id;
+          opt.textContent = item.season || item.race || `${item.year} season`;
+          select.appendChild(opt);
+        });
+
+        renderChampionsList(championships);
+        source.textContent = `Adatforrás: ${activeBackend}`;
+        setStatus('Válassz egy szezont a listából.');
+      } catch (error) {
+        setStatus(error.message);
+        source.textContent = '';
+        championsList.innerHTML = '';
+      }
+    }
+
+    async function showWinner() {
+      const id = document.getElementById('raceSelect').value;
+      if (!id) {
+        setStatus('Válassz egy szezont a listából.');
+        return;
+      }
+
+      try {
+        setStatus('Világbajnok betöltése...');
+        const selected = championships.find((item) => String(item.id) === id);
+        if (!selected) {
+          throw new Error('Nem található a kiválasztott szezon.');
+        }
+
+        const winnerData = await fetchFromKnownBackends(`/champion?id=${id}`);
+        result.innerHTML = `${selected.year} világbajnoka: <span>${winnerData.champion || winnerData.winner}</span>`;
+        source.textContent = `Adatforrás: ${activeBackend}`;
+      } catch (error) {
+        setStatus(error.message);
+      }
+    }
+
+    loadRaces();
+  </script>
+</body>
+</html>
