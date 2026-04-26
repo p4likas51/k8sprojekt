@@ -38,8 +38,8 @@ jobs:
 
     - name: Update deployment.yaml with new image tags
       run: |
-        sed -i 's|ghcr.io/p4likas51/k8sprojekt-backend:.*|ghcr.io/p4likas51/k8sprojekt-backend:'"`$IMAGE_TAG`"'|' deployment.yaml
-        sed -i 's|ghcr.io/p4likas51/k8sprojekt-frontend:.*|ghcr.io/p4likas51/k8sprojekt-frontend:'"`$IMAGE_TAG`"'|' deployment.yaml
+        sed -i "s|ghcr.io/p4likas51/k8sprojekt-backend:.*|ghcr.io/p4likas51/k8sprojekt-backend:${IMAGE_TAG}|" deployment.yaml
+        sed -i "s|ghcr.io/p4likas51/k8sprojekt-frontend:.*|ghcr.io/p4likas51/k8sprojekt-frontend:${IMAGE_TAG}|" deployment.yaml
 
         git config --global user.name "p4likas51"
         git config --global user.email "schmitzhofer.pal@students.jedlik.eu"
