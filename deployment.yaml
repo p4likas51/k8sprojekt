@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: k8sprojekt-backend-container
-          image: ghcr.io/p4likas51/k8sprojekt-backend:1777014462
+          image: ghcr.io/p4likas51/k8sprojekt-backend:
           ports:
             - containerPort: 3000
       imagePullSecrets:
@@ -68,7 +68,7 @@ spec:
     spec:
       containers:
         - name: k8sprojekt-frontend-container
-          image: ghcr.io/p4likas51/k8sprojekt-frontend:1777014462
+          image: ghcr.io/p4likas51/k8sprojekt-frontend:
           ports:
             - containerPort: 80
       imagePullSecrets:
