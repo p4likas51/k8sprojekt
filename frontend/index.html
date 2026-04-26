@@ -171,50 +171,6 @@
       opacity: 0.86;
     }
 
-    .champions-list {
-      margin: 18px 0 0;
-      padding: 0;
-      list-style: none;
-      max-height: 300px;
-      overflow: auto;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.5);
-    }
-
-    .champions-list li {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 12px;
-      border-top: 1px solid var(--line);
-      font-size: 0.97rem;
-    }
-
-    .champions-list li:first-child {
-      border-top: 0;
-    }
-
-    .year-badge {
-      font-family: "Orbitron", sans-serif;
-      font-size: 0.84rem;
-      background: rgba(20, 96, 80, 0.1);
-      border: 1px solid rgba(20, 96, 80, 0.22);
-      color: var(--accent-2);
-      border-radius: 999px;
-      padding: 3px 10px;
-      min-width: 70px;
-      text-align: center;
-      flex-shrink: 0;
-    }
-
-    .champion-name {
-      font-weight: 700;
-      color: var(--ink);
-      text-align: right;
-    }
-
     @keyframes rise-in {
       from {
         transform: translateY(18px) scale(0.99);
@@ -257,17 +213,16 @@
   <main class="app">
     <p class="eyebrow">Formula 1 adatok</p>
     <h1>Világbajnokok 1980-tól napjainkig</h1>
-    <p class="description">Itt most valóban csak F1 egyéni világbajnokok szerepelnek. Válassz szezont, vagy nézd végig a teljes listát.</p>
+    <p class="description">Itt most valóban csak F1 egyéni világbajnokok szerepelnek. Válassz egy szezont, és megmutatom az adott év bajnokát.</p>
 
     <section class="control-box">
-      <label for="raceSelect">Szezon</label>
-      <select id="raceSelect" onchange="showWinner()">
+      <label for="seasonSelect">Szezon</label>
+      <select id="seasonSelect" onchange="showSelectedChampion()">
         <option value="">-- Válassz szezont --</option>
       </select>
 
       <div id="result"><span class="status">Betöltés...</span></div>
       <div id="backendSource" class="meta"></div>
-      <ul id="championsList" class="champions-list"></ul>
     </section>
   </main>
 
@@ -283,19 +238,9 @@
 
     const result = document.getElementById('result');
     const source = document.getElementById('backendSource');
-    const championsList = document.getElementById('championsList');
 
     function setStatus(message) {
       result.innerHTML = `<span class="status">${message}</span>`;
-    }
-
-    function renderChampionsList(items) {
-      championsList.innerHTML = '';
-      items.forEach((item) => {
-        const li = document.createElement('li');
-        li.innerHTML = `<span class="year-badge">${item.year}</span><span class="champion-name">${item.champion || item.winner}</span>`;
-        championsList.appendChild(li);
-      });
     }
 
     async function fetchFromKnownBackends(path) {
@@ -318,7 +263,7 @@
       throw new Error('Nem találtam elérhető backendet.');
     }
 
-    async function loadRaces() {
+    async function loadChampionships() {
       try {
         setStatus('Szezonok betöltése...');
         championships = await fetchFromKnownBackends('/championships');
@@ -327,26 +272,24 @@
           throw new Error('A backend nem adott vissza világbajnok adatokat.');
         }
 
-        const select = document.getElementById('raceSelect');
+        const select = document.getElementById('seasonSelect');
         championships.forEach((item) => {
           const opt = document.createElement('option');
           opt.value = item.id;
-          opt.textContent = item.season || item.race || `${item.year} season`;
+          opt.textContent = item.season || `${item.year} Formula 1 World Championship`;
           select.appendChild(opt);
         });
 
-        renderChampionsList(championships);
         source.textContent = `Adatforrás: ${activeBackend}`;
         setStatus('Válassz egy szezont a listából.');
       } catch (error) {
         setStatus(error.message);
         source.textContent = '';
-        championsList.innerHTML = '';
       }
     }
 
-    async function showWinner() {
-      const id = document.getElementById('raceSelect').value;
+    async function showSelectedChampion() {
+      const id = document.getElementById('seasonSelect').value;
       if (!id) {
         setStatus('Válassz egy szezont a listából.');
         return;
@@ -367,7 +310,7 @@
       }
     }
 
-    loadRaces();
+    loadChampionships();
   </script>
 </body>
 </html>
