@@ -48,6 +48,7 @@ const champions = [
   { year: 2023, champion: 'Max Verstappen' },
   { year: 2024, champion: 'Max Verstappen' },
   { year: 2025, champion: 'Lando Norris' },
+  { year: 2026, champion: 'George Russell' },
 ];
 
 const championships = champions.map((item, index) => ({
